@@ -8,11 +8,16 @@ import axios from 'axios';
 import './App.css';
 
 class App extends React.Component {
-  state = {
-    users: [],
-    searchText: '',
-    followers: []
-  };
+  
+  constructor() {
+    super();
+    this.state = {
+      users: [],
+      searchText: '',
+      followers: []
+    };
+    this.baseState = this.state;
+  }
 
   componentDidMount() {
 
@@ -26,13 +31,13 @@ class App extends React.Component {
     .catch(err => console.log(err));
 
     axios
-        .get(`https://api.github.com/users/eddiemadrigal/followers`)
-        .then(res => {
-          this.setState({
-            followers: res.data
-          });
-        })
-        .catch(err => console.log(err));
+    .get(`https://api.github.com/users/eddiemadrigal/followers`)
+    .then(res => {
+      this.setState({
+        followers: res.data
+      });
+    })
+    .catch(err => console.log(err));
 
   }
 
@@ -59,9 +64,6 @@ class App extends React.Component {
       
     }
 
-    console.log("prevState user:", prevState.users);
-    console.log("this state users", this.state.users);
-
   }
 
   handleChanges = e => {
@@ -69,6 +71,30 @@ class App extends React.Component {
       searchText: e.target.value
     });
   };
+
+  clearForm = e => {
+    e.preventDefault();
+    this.setState(this.baseState);
+
+    axios
+    .get('https://api.github.com/users/eddiemadrigal')
+    .then(res => {
+      this.setState({
+        users: res.data
+      });
+    })
+    .catch(err => console.log(err));
+
+    axios
+    .get(`https://api.github.com/users/eddiemadrigal/followers`)
+    .then(res => {
+      this.setState({
+        followers: res.data
+      });
+    })
+    .catch(err => console.log(err));
+
+  }
 
   fetchUsers = e => {
 
@@ -101,11 +127,14 @@ class App extends React.Component {
             <Col sm="12" md={{ size: 6, offset: 3 }}>
               <h1>GitHub User Search</h1>
                 <Row form>
-                  <Col md={{ size: 9 }}>
-                    <Input placeholder="GitHub User Name" value = { this.state.searchText }  onChange = { this.handleChanges } />
+                  <Col md={{ size: 8 }}>
+                    <Input autoFocus placeholder="GitHub User Name" value = { this.state.searchText }  onChange = { this.handleChanges } />
                   </Col>
-                  <Col md={{ size: 3 }}>
+                  <Col md={{ size: 2 }}>
                     <Button color="success" onClick = { this.fetchUsers }>Search</Button>
+                  </Col>
+                  <Col md={{ size: 2 }}>
+                    <Button color="secondary" onClick = { this.clearForm }>Reset</Button>
                   </Col>
                 </Row>
               <Card className="card-info">
