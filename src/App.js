@@ -9,11 +9,15 @@ import './App.css';
 
 class App extends React.Component {
   
-  state = {
-    users: [],
-    searchText: '',
-    followers: []
-  };
+  constructor() {
+    super();
+    this.state = {
+      users: [],
+      searchText: '',
+      followers: []
+    };
+    this.baseState = this.state;
+  }
 
   componentDidMount() {
 
@@ -70,6 +74,7 @@ class App extends React.Component {
 
   clearForm = e => {
     e.preventDefault();
+    this.setState(this.baseState);
 
     axios
     .get('https://api.github.com/users/eddiemadrigal')
